@@ -1,0 +1,17 @@
+[user]
+        name = eawagner
+	email = ceraw79@hotmail.com
+[core]
+	editor = vi
+[color]
+        branch = auto
+	diff = auto
+	interactive = auto
+	status = auto
+	ui = auto
+[alias]
+	prune-all = !git remote | xargs -n 1 git remote prune
+[push]
+        default = tracking
+[pull]
+        default = tracking
