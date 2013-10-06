@@ -1,7 +1,7 @@
 
 . ~/.gitprompt
 
-export PATH=$PATH:/opt/apache-maven-3.0.5/bin
+export PATH=$PATH:/opt/apache-maven-3.1.1/bin
 
 if type -t __git_ps1 > /dev/null 2>&1; then
     GIT_PS1_SHOWDIRTYSTATE=1
