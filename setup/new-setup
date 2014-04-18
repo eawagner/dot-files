@@ -1,0 +1,87 @@
+
+MAVEN_INSTALL_VERSION=3.2.1
+INTELLIJ_INSTALL_VERSION=13.1.1
+
+function setup-required() {
+	#Set up sun java ppa
+	sudo add-apt-repository ppa:webupd8team/java
+
+	sudo apt-get update
+
+	sudo apt-get install vim git ssh oracle-java7-installer oracle-java7-set-default
+}
+
+function setup-ssh() {
+	mkdir ~/.ssh
+	pushd ~/.ssh >> /dev/null
+	ssh-keygen -t rsa -C "ceraw79@hotmail.com"
+	cat id_rsa.pub >> authorized_keys
+	popd >> /dev/null
+}
+
+function setup-dev-env() {
+	if [ -z $(which git) ]; then
+		echo "Run setup-required"
+		exit 1
+	fi
+	if [ ! -f ~/.ssh/id_rsa.pub ]; then
+		echo "Run setup-ssh first"
+		exit 1
+	fi
+
+	echo "Add the following to git hub ssh keys. Hit any key when done."
+	echo 
+	cat ~/.ssh/id_rsa.pub
+	echo
+	read -n 1 -s
+
+	#Install default git config and bashrc files
+	mkdir -p ~/src
+	pushd ~/src >> /dev/null
+	git clone git@github.com:eawagner/dot-files.git
+	popd >> /dev/null
+
+	cp -a ~/src/dot-files/.bashrc ~/
+	cp -a ~/src/dot-files/.gitconfig ~/
+	source ~/.bashrc
+
+	#Install IntelliJ and Maven
+	sudo chown $USER:$USER /opt
+	pushd /opt >> /dev/null
+	wget http://mirror.cc.columbia.edu/pub/software/apache/maven/maven-3/${MAVEN_INSTALL_VERSION}/binaries/apache-maven-${MAVEN_INSTALL_VERSION}-bin.tar.gz
+	tar xzvf apache-maven-${MAVEN_INSTALL_VERSION}-bin.tar.gz
+	rm -rf apache-maven-${MAVEN_INSTALL_VERSION}-bin.tar.gz
+	echo "PATH=\$PATH:/opt/apache-maven-3.2.1/bin" >> ~/.bashrc
+
+	wget http://download.jetbrains.com/idea/ideaIU-${INTELLIJ_INSTALL_VERSION}.tar.gz
+	tar xzvf ideaIU-${INTELLIJ_INSTALL_VERSION}.tar.gz
+	rm -rf ideaIU-${INTELLIJ_INSTALL_VERSION}.tar.gz
+	popd >> /dev/null
+	
+	source ~/.bashrc
+}
+
+function setup-c3-env() {
+	if [ -z $(which git) ]; then
+		echo "Run setup-required"
+		exit 1
+	fi
+	if [ ! -f ~/.ssh/id_rsa.pub ]; then
+		echo "Run setup-ssh first"
+		exit 1
+	fi	
+	
+	mkdir -p ~/src/c3
+	pushd ~/src/c3 >> /dev/null
+	git clone git@github.com:CSAAC-collaboration/mango.git
+	git clone git@github.com:CSAAC-collaboration/c3-parent.git
+	git clone git@github.com:CSAAC-collaboration/c3-common.git
+	git clone git@github.com:CSAAC-collaboration/c3-rya.git
+	git clone git@github.com:CSAAC-collaboration/c3-gem.git
+	git clone git@github.com:CSAAC-collaboration/c3-depot.git
+	git clone git@github.com:CSAAC-collaboration/c3-ingest.git
+	git clone git@github.com:CSAAC-collaboration/c3-rex.git
+	git clone git@github.com:CSAAC-collaboration/security.git
+	git clone git@github.com:CSAAC-collaboration/c3-apps.git
+	popd >> /dev/null	
+}
